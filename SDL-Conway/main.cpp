@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <stdio.h>
 
 int main(const int argc, char* argv[])
 {
@@ -7,10 +8,13 @@ int main(const int argc, char* argv[])
 	const int FPS = 60;
 	const int frameDelay = 1000 / FPS;
 
+	const int windowW = 800;
+	const int windowH = 600;
+
 	Uint32 frameLast;
 	int frameTime;
 
-	game->Init("Conway's Game of Life", 800, 600, false);
+	game->Init("Conway's Game of Life", windowW, windowH, false);
 
 	while (game->Running())
 	{

@@ -39,6 +39,7 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 
 void Game::Update()
 {
+
 	cell.x += cell.w;
 	if (cell.x >= windowW)
 	{
