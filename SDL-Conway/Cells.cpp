@@ -1,4 +1,7 @@
 #include "Cells.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 bool tempArr[arrayMaxH][arrayMaxW];
 
@@ -21,13 +24,16 @@ Cells::Cells(int windowW, int windowH)
 Cells::~Cells()
 {}
 
-void Cells::LoadArray(FILE* arrayFile)
-{
+void Cells::LoadArray(const char* fileName)
+{	
+	FILE* arrayFile;
+	fopen_s(&arrayFile, fileName, "r");
+
 	int arrW, arrH, temp;
 
-	fscanf_s(arrayFile, "%d %d", &arrW, &arrH);
+	fscanf_s(arrayFile, "%d %d", &arrH, &arrW);
 
-	if (arrW <= arrayW && arrH < arrayH)
+	if (arrW <= arrayW && arrH <= arrayH)
 	{
 		for (int i = 1; i <= arrH; i++)
 		{
@@ -35,17 +41,14 @@ void Cells::LoadArray(FILE* arrayFile)
 			{
 				fscanf_s(arrayFile, "%d", &temp);
 				cellArray[i][j] = temp;
-				printf_s("%d ", cellArray[i][j]);
 			}
-
-			printf_s("\n");
 		}
 
 		printf_s("Cell Array successfully loaded!\n");
 	}
-	else printf_s("ERROR: Invalid array dimensions!\n");
+	else printf_s("ERROR: Invalid array dimensions! %d %d\n", arrW, arrH);
 
-	cleanTempArr();
+	fclose(arrayFile);
 }
 
 void Cells::UpdateArray()
@@ -54,8 +57,8 @@ void Cells::UpdateArray()
 	
 	int direction[8][2] = { -1,-1, -1,0, -1,1, 0,-1, 0,1, 1,-1, 1,0, 1,1 };
 
-	for (int i = 1; i <= arrayH; i++)
-		for (int j = 1; j <= arrayW; j++)
+	for (int i = 1; i <= arrayH + 1; i++)
+		for (int j = 1; j <= arrayW + 1; j++)
 		{
 			tempSum = 0;
 
@@ -71,9 +74,33 @@ void Cells::UpdateArray()
 			else if (tempSum == 3) tempArr[i][j] = true;
 		}
 
-	for (int i = 1; i <= arrayH; i++)
-		for (int j = 1; j <= arrayW; j++)
+	for (int i = 1; i <= arrayH + 1; i++)
+		for (int j = 1; j <= arrayW + 1; j++)
 			cellArray[i][j] = tempArr[i][j];
+
+	cleanTempArr();
+}
+
+void Cells::GenRandomArray(int arrH, int arrW, const char* fileName)
+{
+	FILE* out;
+	fopen_s(&out, fileName, "w");
+
+	srand(time(NULL));
+
+	fprintf_s(out, "%d %d\n", arrH, arrW);
+
+	for (int i = 1; i <= arrH; i++)
+	{
+		for (int j = 1; j <= arrW; j++)
+			fprintf_s(out, "%d ", rand() % 2);
+
+		fprintf_s(out, "\n");
+	}
+
+	printf_s("Random array generated!\n");
+
+	fclose(out);
 }
 
 void Cells::PrintCurrentGeneration(SDL_Renderer* ren)
@@ -92,4 +119,15 @@ void Cells::PrintCurrentGeneration(SDL_Renderer* ren)
 			}
 
 	SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
+}
+
+void Cells::PrintArray()
+{
+	for (int i = 1; i <= arrayH; i++)
+	{
+		for (int j = 1; j <= arrayW; j++)
+			printf_s("%d ", cellArray[i][j]);
+
+		printf_s("\n");
+	}
 }

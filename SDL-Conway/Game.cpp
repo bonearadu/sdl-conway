@@ -34,11 +34,10 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 		isRunning = true;
 	}
 
-	FILE* cellsFile;
-	fopen_s(&cellsFile, "cells.txt", "r");
-
 	cells = new Cells(windowW, windowH);
-	cells->LoadArray(cellsFile);
+
+	cells->GenRandomArray(cells->arrayH, cells->arrayW, "rand.txt");
+	cells->LoadArray("rand.txt");
 }
 
 void Game::Update()
