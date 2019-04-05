@@ -8,13 +8,15 @@ int main(const int argc, char* argv[])
 	const int FPS = 20;
 	const int frameDelay = 1000 / FPS;
 
-	const int windowW = 800;
-	const int windowH = 600;
+	const int windowW = 1920;
+	const int windowH = 1080;
+
+	const bool fullscreen = true;
 
 	Uint32 frameLast;
 	int frameTime;
 
-	game->Init("Conway's Game of Life", windowW, windowH, false);
+	game->Init("Conway's Game of Life", windowW, windowH, fullscreen);
 
 	while (game->Running())
 	{

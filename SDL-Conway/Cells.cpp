@@ -26,29 +26,33 @@ Cells::~Cells()
 
 void Cells::LoadArray(const char* fileName)
 {	
-	FILE* arrayFile;
+	FILE* arrayFile = 0;
 	fopen_s(&arrayFile, fileName, "r");
 
-	int arrW, arrH, temp;
-
-	fscanf_s(arrayFile, "%d %d", &arrH, &arrW);
-
-	if (arrW <= arrayW && arrH <= arrayH)
+	if (arrayFile != 0)
 	{
-		for (int i = 1; i <= arrH; i++)
+		int arrW, arrH, temp;
+
+		fscanf_s(arrayFile, "%d %d", &arrH, &arrW);
+
+		if (arrW <= arrayW && arrH <= arrayH)
 		{
-			for (int j = 1; j <= arrW; j++)
+			for (int i = 1; i <= arrH; i++)
 			{
-				fscanf_s(arrayFile, "%d", &temp);
-				cellArray[i][j] = temp;
+				for (int j = 1; j <= arrW; j++)
+				{
+					fscanf_s(arrayFile, "%d", &temp);
+					cellArray[i][j] = temp;
+				}
 			}
+
+			printf_s("Cell Array successfully loaded!\n");
 		}
+		else printf_s("ERROR: Invalid array dimensions! %d %d\n", arrH, arrW);
 
-		printf_s("Cell Array successfully loaded!\n");
+		fclose(arrayFile);
 	}
-	else printf_s("ERROR: Invalid array dimensions! %d %d\n", arrW, arrH);
-
-	fclose(arrayFile);
+	else printf_s("ERROR: Cannot open file %s!\n", fileName);
 }
 
 void Cells::UpdateArray()
@@ -83,24 +87,28 @@ void Cells::UpdateArray()
 
 void Cells::GenRandomArray(int arrH, int arrW, const char* fileName)
 {
-	FILE* out;
+	FILE* out = 0;
 	fopen_s(&out, fileName, "w");
 
-	srand(time(NULL));
-
-	fprintf_s(out, "%d %d\n", arrH, arrW);
-
-	for (int i = 1; i <= arrH; i++)
+	if (out != 0)
 	{
-		for (int j = 1; j <= arrW; j++)
-			fprintf_s(out, "%d ", rand() % 2);
+		srand(time(NULL));
 
-		fprintf_s(out, "\n");
+		fprintf_s(out, "%d %d\n", arrH, arrW);
+
+		for (int i = 1; i <= arrH; i++)
+		{
+			for (int j = 1; j <= arrW; j++)
+				fprintf_s(out, "%d ", rand() % 2);
+
+			fprintf_s(out, "\n");
+		}
+
+		printf_s("Random array generated!\n");
+
+		fclose(out);
 	}
-
-	printf_s("Random array generated!\n");
-
-	fclose(out);
+	else printf_s("ERROR: Cannot open file %s!\n", fileName);
 }
 
 void Cells::PrintCurrentGeneration(SDL_Renderer* ren)
@@ -111,8 +119,8 @@ void Cells::PrintCurrentGeneration(SDL_Renderer* ren)
 		for (int j = 1; j <= arrayW; j++)
 			if (cellArray[i][j])
 			{
-				cell.y = (j - 1) * 8;
-				cell.x = (i - 1) * 8;
+				cell.x = (j - 1) * 8;
+				cell.y = (i - 1) * 8;
 
 				SDL_RenderFillRect(ren, &cell);
 				SDL_RenderDrawRect(ren, &cell);
