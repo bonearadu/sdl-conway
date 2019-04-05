@@ -5,7 +5,7 @@ int main(const int argc, char* argv[])
 {
 	Game* game = new Game();
 
-	const int FPS = 60;
+	const int FPS = 10;
 	const int frameDelay = 1000 / FPS;
 
 	const int windowW = 800;

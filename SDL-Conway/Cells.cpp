@@ -1,39 +1,61 @@
 #include "Cells.h"
 
-Cells::Cells()
-{}
+bool tempArr[arrayMaxH][arrayMaxW];
+
+void cleanTempArr()
+{
+	for (int i = 0; i < arrayMaxH; i++)
+		for (int j = 0; j < arrayMaxW; j++)
+			tempArr[i][j] = 0;
+}
+
+Cells::Cells(int windowW, int windowH)
+{
+	arrayW = windowW / cellSize;
+	arrayH = windowH / cellSize;
+
+	cell.w = cellSize;
+	cell.h = cellSize;
+}
 
 Cells::~Cells()
 {}
 
 void Cells::LoadArray(FILE* arrayFile)
 {
-	int arrW, arrH;
+	int arrW, arrH, temp;
 
-	scanf_s("%d %d", &arrW, &arrH);
+	fscanf_s(arrayFile, "%d %d", &arrW, &arrH);
 
-	if (arrW <= arrayMaxW && arrH < arrayMaxH)
+	if (arrW <= arrayW && arrH < arrayH)
 	{
-		arrayW = arrW;
-		arrayH = arrH;
+		for (int i = 1; i <= arrH; i++)
+		{
+			for (int j = 1; j <= arrW; j++)
+			{
+				fscanf_s(arrayFile, "%d", &temp);
+				cellArray[i][j] = temp;
+				printf_s("%d ", cellArray[i][j]);
+			}
 
-		for (int i = 1; i <= arrayW; i++)
-			for (int j = 1; j <= arrayH; j++)
-				scanf_s("%d", &cellArray[i][j]);
+			printf_s("\n");
+		}
 
 		printf_s("Cell Array successfully loaded!\n");
 	}
 	else printf_s("ERROR: Invalid array dimensions!\n");
+
+	cleanTempArr();
 }
 
 void Cells::UpdateArray()
 {
-	int tempArr[arrayMaxH][arrayMaxW], tempSum;
-
+	int tempSum;
+	
 	int direction[8][2] = { -1,-1, -1,0, -1,1, 0,-1, 0,1, 1,-1, 1,0, 1,1 };
 
-	for (int i = 1; i <= arrayW; i++)
-		for (int j = 1; j <= arrayH; j++)
+	for (int i = 1; i <= arrayH; i++)
+		for (int j = 1; j <= arrayW; j++)
 		{
 			tempSum = 0;
 
@@ -46,15 +68,28 @@ void Cells::UpdateArray()
 				else if (tempSum == 2 || tempSum == 3) tempArr[i][j] = true;
 				else if (tempSum < 2) tempArr[i][j] = false;
 			}
-			else if (tempSum == 3) tempSum[i][j] = true;
+			else if (tempSum == 3) tempArr[i][j] = true;
 		}
 
-	for (int i = 1; i <= arrayW; i++)
-		for (int j = 1; j <= arrayH; j++)
+	for (int i = 1; i <= arrayH; i++)
+		for (int j = 1; j <= arrayW; j++)
 			cellArray[i][j] = tempArr[i][j];
 }
 
-void Cells::PrintCurrentGeneration()
+void Cells::PrintCurrentGeneration(SDL_Renderer* ren)
 {
-	// to be implemented
+	SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
+
+	for (int i = 1; i <= arrayH; i++)
+		for (int j = 1; j <= arrayW; j++)
+			if (cellArray[i][j])
+			{
+				cell.y = (j - 1) * 8;
+				cell.x = (i - 1) * 8;
+
+				SDL_RenderFillRect(ren, &cell);
+				SDL_RenderDrawRect(ren, &cell);
+			}
+
+	SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
 }

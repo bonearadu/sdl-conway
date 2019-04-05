@@ -1,7 +1,8 @@
 #include "Game.h"
+#include "Cells.h"
 #include <stdio.h>
 
-SDL_Rect cell;
+Cells* cells;
 
 Game::Game()
 {}
@@ -29,35 +30,28 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 		renderer = SDL_CreateRenderer(window, -1, 0);
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		printf_s("Renderer Created!\n");
-		
-		cell.h = 8;
-		cell.w = 8;
 
 		isRunning = true;
 	}
+
+	FILE* cellsFile;
+	fopen_s(&cellsFile, "cells.txt", "r");
+
+	cells = new Cells(windowW, windowH);
+	cells->LoadArray(cellsFile);
 }
 
 void Game::Update()
 {
-
-	cell.x += cell.w;
-	if (cell.x >= windowW)
-	{
-		cell.y += cell.h;
-		cell.x = 0;
-	}
+	cells->UpdateArray();
 }
 
 void Game::Render()
 {
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	
 	SDL_RenderClear(renderer);
-	
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-	SDL_RenderFillRect(renderer, &cell);
-	SDL_RenderDrawRect(renderer, &cell);
-	
+
+	cells->PrintCurrentGeneration(renderer);
+
 	SDL_RenderPresent(renderer);
 }
 
