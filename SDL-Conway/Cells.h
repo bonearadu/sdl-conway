@@ -18,10 +18,12 @@ public:
 	void PrintArray();
 	void UpdateArray();
 	void PrintCurrentGeneration(SDL_Renderer* ren);
+	void PrintGrid(SDL_Renderer* ren);
 	void GenRandomArray(int arrH, int arrW, const char* fileName);
 
 private:
 	int cellSize = 8;
+	int cellSpace = 1;
 	int generation = 0;
 	bool cellArray[arrayMaxH][arrayMaxW] = { 0 };
 

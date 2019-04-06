@@ -17,8 +17,8 @@ Cells::Cells(int windowW, int windowH)
 	arrayW = windowW / cellSize;
 	arrayH = windowH / cellSize;
 
-	cell.w = cellSize;
-	cell.h = cellSize;
+	cell.w = cellSize - cellSpace;
+	cell.h = cellSize - cellSpace;
 }
 
 Cells::~Cells()
@@ -119,8 +119,8 @@ void Cells::PrintCurrentGeneration(SDL_Renderer* ren)
 		for (int j = 1; j <= arrayW; j++)
 			if (cellArray[i][j])
 			{
-				cell.x = (j - 1) * 8;
-				cell.y = (i - 1) * 8;
+				cell.x = (j - 1) * cellSize + cellSpace;
+				cell.y = (i - 1) * cellSize + cellSpace;
 
 				SDL_RenderFillRect(ren, &cell);
 				SDL_RenderDrawRect(ren, &cell);
@@ -138,4 +138,21 @@ void Cells::PrintArray()
 
 		printf_s("\n");
 	}
+}
+
+void Cells::PrintGrid(SDL_Renderer* ren)
+{
+	SDL_SetRenderDrawColor(ren, 31, 31, 31, 255);
+
+	for (int i = 1; i <= arrayH; i++)
+	{
+		SDL_RenderDrawLine(ren, 0, i * cellSize, arrayW * cellSize, i * cellSize);
+	}
+
+	for (int i = 1; i <= arrayW; i++)
+	{
+		SDL_RenderDrawLine(ren, i * cellSize, 0, i * cellSize, arrayH * cellSize);
+	}
+
+	SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
 }

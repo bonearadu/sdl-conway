@@ -8,10 +8,10 @@ int main(const int argc, char* argv[])
 	const int FPS = 20;
 	const int frameDelay = 1000 / FPS;
 
-	const int windowW = 1920;
-	const int windowH = 1080;
+	const int windowW = 1024;
+	const int windowH = 768;
 
-	const bool fullscreen = true;
+	const bool fullscreen = false;
 
 	Uint32 frameLast;
 	int frameTime;

@@ -49,6 +49,7 @@ void Game::Render()
 {
 	SDL_RenderClear(renderer);
 
+	cells->PrintGrid(renderer);
 	cells->PrintCurrentGeneration(renderer);
 
 	SDL_RenderPresent(renderer);
